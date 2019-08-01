@@ -105,7 +105,7 @@ class CGRecoveryManager(RecoveryManager):
     def create_mirror(self, resource_name, target_name, mirror_type,
                       slave_resource_name, rpo=None, remote_rpo=None,
                       schedule=None, remote_schedule=None,
-                      activate_mirror='no'):
+                      activate_mirror='no', part_of_multisite='no'):
         '''creates a mirror and returns a mirror object.
            target name must be a valid target from target_list,
            mirror type must be 'sync' or 'async',
@@ -115,7 +115,8 @@ class CGRecoveryManager(RecoveryManager):
                                    mirror_type, slave_resource_name, rpo=rpo,
                                    remote_rpo=remote_rpo, schedule=schedule,
                                    remote_schedule=remote_schedule,
-                                   activate_mirror=activate_mirror)
+                                   activate_mirror=activate_mirror,
+                                   part_of_multisite=part_of_multisite)
 
     def delete_mirror(self, resource_id):
         '''delete a mirror by resource_id'''

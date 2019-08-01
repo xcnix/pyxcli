@@ -85,7 +85,8 @@ class VolumeRecoveryManager(RecoveryManager):
     def create_mirror(self, resource_name, target_name, mirror_type,
                       slave_resource_name, create_slave='no', remote_pool=None,
                       rpo=None, remote_rpo=None, schedule=None,
-                      remote_schedule=None, activate_mirror='no'):
+                      remote_schedule=None, activate_mirror='no',
+                      part_of_multisite='no'):
         '''creates a mirror and returns a mirror object,
            target name must be a valid target from target_list,
            mirror type must be 'sync' or 'async',
@@ -97,7 +98,8 @@ class VolumeRecoveryManager(RecoveryManager):
                                    remote_pool=remote_pool, rpo=rpo,
                                    remote_rpo=remote_rpo, schedule=schedule,
                                    remote_schedule=remote_schedule,
-                                   activate_mirror=activate_mirror)
+                                   activate_mirror=activate_mirror,
+                                   part_of_multisite=part_of_multisite)
 
     def delete_mirror(self, resource_id):
         '''delete a mirror by mirror name'''

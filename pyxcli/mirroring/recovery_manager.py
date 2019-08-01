@@ -274,25 +274,39 @@ class RecoveryManager(object):
                        mirror_type, slave_resource_name, create_slave='no',
                        remote_pool=None, rpo=None, remote_rpo=None,
                        schedule=None, remote_schedule=None,
-                       activate_mirror='no'):
+                       activate_mirror='no', part_of_multisite='no'):
         '''creates a mirror and returns a mirror object.
             resource_type must be 'vol' or 'cg',
             target name must be a valid target from target_list,
             mirror type must be 'sync' or 'async',
             slave_resource_name would be the slave_vol or slave_cg name'''
-
-        kwargs = {
-            resource_type: resource_name,
-            'target': target_name,
-            'type': mirror_type,
-            'slave_' + resource_type: slave_resource_name,
-            'create_slave': create_slave,
-            'remote_pool': remote_pool,
-            'rpo': rpo,
-            'remote_rpo': remote_rpo,
-            'schedule': schedule,
-            'remote_schedule': remote_schedule
-        }
+        if part_of_multisite == 'yes':
+            kwargs = {
+                resource_type: resource_name,
+                'target': target_name,
+                'type': mirror_type,
+                'slave_' + resource_type: slave_resource_name,
+                'create_slave': create_slave,
+                'remote_pool': remote_pool,
+                'rpo': rpo,
+                'remote_rpo': remote_rpo,
+                'schedule': schedule,
+                'remote_schedule': remote_schedule,
+                'part_of_multisite': part_of_multisite
+            }
+        else:
+            kwargs = {
+                resource_type: resource_name,
+                'target': target_name,
+                'type': mirror_type,
+                'slave_' + resource_type: slave_resource_name,
+                'create_slave': create_slave,
+                'remote_pool': remote_pool,
+                'rpo': rpo,
+                'remote_rpo': remote_rpo,
+                'schedule': schedule,
+                'remote_schedule': remote_schedule
+            }
 
         if mirror_type == 'sync':
             kwargs['type'] = 'sync_best_effort'

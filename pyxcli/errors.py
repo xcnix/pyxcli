@@ -131,9 +131,11 @@ class CommandFailedInternalError(CommandExecutionError):
 class MCLTimeoutError(CommandFailedRuntimeError):
     pass
 
+
 @CommandExecutionError.register("VOLUME_IS_MASTER")
 class VolumeMasterError(CommandFailedRuntimeError):
     pass
+
 
 @CommandExecutionError.register("PARTIAL_SUCCESS")
 class PartialSuccessError(CommandFailedRuntimeError):
@@ -716,6 +718,12 @@ class StandbyAlreadyDefined(CommandFailedRuntimeError):
     pass
 
 
+@CommandExecutionError.register(
+    "TRNS_MGMT_STATUS_OBJECTS_IN_DIFFERENT_DOMAINS")
+class StorageObjectIsNotInDomain(CommandFailedRuntimeError):
+    pass
+
+
 @CommandExecutionError.register("CONS_GROUP_BAD_TARGET")
 class ConsGroupBadTarget(CommandFailedRuntimeError):
     pass
@@ -778,6 +786,12 @@ class DataReductionTierIsOffline(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("HA_ASSOCIATED_WITH_MULTISITE")
 class HaAssociatedWithMultisite(CommandFailedRuntimeError):
+    pass
+
+
+@CommandExecutionError.register(
+    "TRNS_MGMT_STATUS_OBJECTS_IN_DIFFERENT_DOMAINS")
+class StorageObjectIsNotInDomain(CommandFailedRuntimeError):
     pass
 
 
@@ -846,63 +860,13 @@ class HaLastSyncTimesDiffer(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("HA_LOCAL_PEER_HAS_NO_QUORUM_WITNESS_CONNECTIVITY")
-class HaLocalPeerHasNoQuorumWitnessConnectivity(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("HA_PART_OF_MULTISITE")
 class HaPartOfMultisite(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("HA_PEER_QUORUM_WITNESS_CONFIGURATION_NOT_VERIFIED")
-class HaPeerQuorumWitnessConfigurationNotVerified(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_POSSIBLE_CONS_GROUP_MEMBERSHIP_MISMATCH")
-class HaPossibleConsGroupMembershipMismatch(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_POSSIBLE_SIZE_MISMATCH")
-class HaPossibleSizeMismatch(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_RELATION_MASTER_COULD_NOT_UPDATE_QW_AFTER_RETURN_TO_GOOD_STATE")
-class HaRelationMasterCouldNotUpdateQwAfterReturnToGoodState(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_REMOTE_PEER_HAS_NO_QUORUM_WITNESS_CONNECTIVITY")
-class HaRemotePeerHasNoQuorumWitnessConnectivity(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_REMOTE_PEER_QUORUM_WITNESS_CONFIGURATION_NOT_VERIFIED")
-class HaRemotePeerQuorumWitnessConfigurationNotVerified(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_REMOTE_TARGET_QUORUM_IS_NOT_ACTIVATED")
-class HaRemoteTargetQuorumIsNotActivated(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("HA_RETRY_OPERATION")
 class HaRetryOperation(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_TARGET_QUORUM_IS_NOT_ACTIVATED")
-class HaTargetQuorumIsNotActivated(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("HA_TARGET_QUORUM_WITNESS_IS_NOT_ACTIVATED")
-class HaTargetQuorumWitnessIsNotActivated(CommandFailedRuntimeError):
     pass
 
 
@@ -981,11 +945,6 @@ class MirrorOfSameTypeExistsOnVolume(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("MIRROR_OR_HYPERSWAP_CONS_GROUP_CANNOT_CONTAIN_MULTISITE_VOLS")
-class MirrorOrHyperswapConsGroupCannotContainMultisiteVols(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("MIRROR_PART_OF_MULTISITE")
 class MirrorPartOfMultisite(CommandFailedRuntimeError):
     pass
@@ -1021,116 +980,6 @@ class MultisiteAsyncMirrorIsNotConnected(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("MULTISITE_CANNOT_CONTAIN_SYNC_MIRROR")
-class MultisiteCannotContainSyncMirror(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CG_ADD_VOL_FAILED_TO_ROLLBACK_MANUAL_CLEANUP_REQUIRED")
-class MultisiteCgAddVolFailedToRollbackManualCleanupRequired(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CONS_GROUP_CANNOT_CONTAIN_NON_MULTISITEED_VOLS")
-class MultisiteConsGroupCannotContainNonMultisiteedVols(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CONS_GROUP_MEMBERSHIP_MISMATCH")
-class MultisiteConsGroupMembershipMismatch(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CONS_GROUP_MEMBER_VOL_IS_MISSING_A_RELATION")
-class MultisiteConsGroupMemberVolIsMissingARelation(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CONS_GROUP_ROLE_IS_NOT_MASTER")
-class MultisiteConsGroupRoleIsNotMaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_CONS_GROUP_STANDBY_CONFIGURATION_MISMATCH")
-class MultisiteConsGroupStandbyConfigurationMismatch(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_DEFINE_FAILED_TO_ROLLBACK_MANUAL_CLEANUP_REQUIRED")
-class MultisiteDefineFailedToRollbackManualCleanupRequired(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_DELETE_PARTIAL_FAILURE_MANUAL_CLEANUP_REQUIRED")
-class MultisiteDeletePartialFailureManualCleanupRequired(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INCOMPATIBLE_TARGET_VERSION")
-class MultisiteIncompatibleTargetVersion(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INIT_RELATION_BAD_UID")
-class MultisiteInitRelationBadUid(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INVALID_MASTER_LOOPBACK_CONFIGURATION")
-class MultisiteInvalidMasterLoopbackConfiguration(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INVALID_MASTER_SLAVE_TARGET_CONNECTIVITY")
-class MultisiteInvalidMasterSlaveTargetConnectivity(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INVALID_MASTER_SMASTER_TARGET_CONNECTIVITY")
-class MultisiteInvalidMasterSmasterTargetConnectivity(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INVALID_SLAVE_LOOPBACK_CONFIGURATION")
-class MultisiteInvalidSlaveLoopbackConfiguration(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_INVALID_SMASTER_LOOPBACK_CONFIGURATION")
-class MultisiteInvalidSmasterLoopbackConfiguration(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_IS_PATIALY_DEFINED")
-class MultisiteIsPatialyDefined(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_MASTER_CAN_ONLY_BE_CHANGED_TO_SLAVE")
-class MultisiteMasterCanOnlyBeChangedToSlave(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_MASTER_CAN_ONLY_BE_CHANGED_TO_SMASTER")
-class MultisiteMasterCanOnlyBeChangedToSmaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_MASTER_INVALID_CONFIGURATION")
-class MultisiteMasterInvalidConfiguration(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_MASTER_INVALID_RELATION_STATE")
-class MultisiteMasterInvalidRelationState(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_MASTER_SLAVE_INCONSISTENT_LRS_CONFIGURATION")
-class MultisiteMasterSlaveInconsistentLrsConfiguration(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("MULTISITE_MASTER_SMASTER_CLOCK_SKEW_TOO_BIG")
 class MultisiteMasterSmasterClockSkewTooBig(CommandFailedRuntimeError):
     pass
@@ -1138,71 +987,6 @@ class MultisiteMasterSmasterClockSkewTooBig(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("MULTISITE_NOT_OPERATIONAL")
 class MultisiteNotOperational(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_NUM_OF_MULTISITES_ON_MASTER_LIMIT_REACHED")
-class MultisiteNumOfMultisitesOnMasterLimitReached(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_NUM_OF_MULTISITES_ON_SLAVE_LIMIT_REACHED")
-class MultisiteNumOfMultisitesOnSlaveLimitReached(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_NUM_OF_MULTISITES_ON_SMASTER_LIMIT_REACHED")
-class MultisiteNumOfMultisitesOnSmasterLimitReached(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_ROLE_IS_NOT_MASTER")
-class MultisiteRoleIsNotMaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_ROLE_IS_NOT_SMASTER")
-class MultisiteRoleIsNotSmaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_ROLE_IS_STANDALONE_MASTER")
-class MultisiteRoleIsStandaloneMaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_CAN_ONLY_BE_CHANGED_TO_MASTER")
-class MultisiteSlaveCanOnlyBeChangedToMaster(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_HAS_MORE_RECENT_DATA")
-class MultisiteSlaveHasMoreRecentData(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_INCOMPATIBLE_VERSION")
-class MultisiteSlaveIncompatibleVersion(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_INVALID_CONFIGURATION")
-class MultisiteSlaveInvalidConfiguration(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_INVALID_MIRROR_STATE")
-class MultisiteSlaveInvalidMirrorState(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_INVALID_RELATION_STATE")
-class MultisiteSlaveInvalidRelationState(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SLAVE_INVALID_STANDBY_CONFIGURATION")
-class MultisiteSlaveInvalidStandbyConfiguration(CommandFailedRuntimeError):
     pass
 
 
@@ -1226,18 +1010,8 @@ class MultisiteSlaveTargetNotConnected(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("MULTISITE_SMASTER_CAN_ONLY_BE_CHANGED_TO_MASTER")
-class MultisiteSmasterCanOnlyBeChangedToMaster(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("MULTISITE_SMASTER_HAS_NO_SYNCHED_SNAPSHOT")
 class MultisiteSmasterHasNoSynchedSnapshot(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SMASTER_INCOMPATIBLE_VERSION")
-class MultisiteSmasterIncompatibleVersion(CommandFailedRuntimeError):
     pass
 
 
@@ -1253,11 +1027,6 @@ class MultisiteSmasterInvalidMirrorState(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("MULTISITE_SMASTER_INVALID_RELATION_STATE")
 class MultisiteSmasterInvalidRelationState(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SMASTER_INVALID_STANDBY_CONFIGURATION")
-class MultisiteSmasterInvalidStandbyConfiguration(CommandFailedRuntimeError):
     pass
 
 
@@ -1278,11 +1047,6 @@ class MultisiteSmasterSlaveTargetMismatch(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("MULTISITE_SMASTER_TARGET_NOT_CONNECTED")
 class MultisiteSmasterTargetNotConnected(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("MULTISITE_SNAPSHOT_MIRROR_NOT_SUPPORTED")
-class MultisiteSnapshotMirrorNotSupported(CommandFailedRuntimeError):
     pass
 
 
@@ -1316,28 +1080,8 @@ class OverwriteSnapshotBadName(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("QUORUM_WITNESS_BAD_NAME")
-class QuorumWitnessBadName(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("QUORUM_WITNESS_CANNOT_BE_ADDED_TO_A_TARGET_OF_THIS_TYPE")
-class QuorumWitnessCannotBeAddedToATargetOfThisType(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("QUORUM_WITNESS_IS_NOT_ACTIVATED")
-class QuorumWitnessIsNotActivated(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("RELATION_RETRY_OPERATION")
 class RelationRetryOperation(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("REMOTE_ALU_ALREADY_EXISTS")
-class RemoteAluAlreadyExists(CommandFailedRuntimeError):
     pass
 
 
@@ -1406,11 +1150,6 @@ class RemoteMaxSnapshotsPerVolumeReached(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("REMOTE_ALU_ALREADY_EXISTSREMOTE_MAX_VOLUMES_REACHED")
-class RemoteAluAlreadyExistsremoteMaxVolumesReached(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("REMOTE_MAY_NOT_HAVE_COMPLETED_THE_OPERATION")
 class RemoteMayNotHaveCompletedTheOperation(CommandFailedRuntimeError):
     pass
@@ -1418,11 +1157,6 @@ class RemoteMayNotHaveCompletedTheOperation(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("REMOTE_MIRROR_IS_STANDBY")
 class RemoteMirrorIsStandby(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("REMOTE_OVERWRITE_SNAPSHOT_GROUP_DOES_NOT_BELONG_TO_GIVEN_GROUP")
-class RemoteOverwriteSnapshotGroupDoesNotBelongToGivenGroup(CommandFailedRuntimeError):
     pass
 
 
@@ -1476,16 +1210,6 @@ class SlaveVolumeIsMapped(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("SNAPSHOT_CAN_NOT_BE_CREATED_REMOTE_CONS_GROUP_DEFINITION_CHANGED")
-class SnapshotCanNotBeCreatedRemoteConsGroupDefinitionChanged(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("SNAPSHOT_CAN_NOT_BE_CREATED_REMOTE_CONS_GROUP_IO_IS_NOT_PAUSED")
-class SnapshotCanNotBeCreatedRemoteConsGroupIoIsNotPaused(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("SNAPSHOT_GROUP_ILLEGAL_PRIORITY")
 class SnapshotGroupIllegalPriority(CommandFailedRuntimeError):
     pass
@@ -1526,18 +1250,8 @@ class TargetBadType(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("TARGET_HAS_A_QUORUM_WITNESS")
-class TargetHasAQuorumWitness(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("TARGET_HAS_ENABLED_HA")
 class TargetHasEnabledHa(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("TARGET_HAS_NO_QUORUM_WITNESS")
-class TargetHasNoQuorumWitness(CommandFailedRuntimeError):
     pass
 
 
@@ -1553,16 +1267,6 @@ class TargetVolumeHasOlvm(CommandFailedRuntimeError):
 
 @CommandExecutionError.register("VOLUME_BAD_PREFIX")
 class VolumeBadPrefix(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("VOLUME_BELONGS_TO_HA_CONS_GROUP")
-class VolumeBelongsToHaConsGroup(CommandFailedRuntimeError):
-    pass
-
-
-@CommandExecutionError.register("VOLUME_BELONGS_TO_MULTISITE_CONS_GROUP")
-class VolumeBelongsToMultisiteConsGroup(CommandFailedRuntimeError):
     pass
 
 
@@ -1596,13 +1300,13 @@ class VolumeIsNotMultisite(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("VOLUME_RELATION_IN_CG_CAN_NOT_BE_CREATED")
-class VolumeRelationInCgCanNotBeCreated(CommandFailedRuntimeError):
+@CommandExecutionError.register("VOLUME_TARGET_MISMATCH")
+class VolumeTargetMismatch(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("VOLUME_TARGET_MISMATCH")
-class VolumeTargetMismatch(CommandFailedRuntimeError):
+@CommandExecutionError.register("TARGET_VOLUME_HAS_HA")
+class TargetVolumeHasHa(CommandFailedRuntimeError):
     pass
 ##############################################################################
 # CredentialsError
@@ -1610,6 +1314,8 @@ class VolumeTargetMismatch(CommandFailedRuntimeError):
 # CommandExecutionError, so although it is raised by _build_response,
 # it derives from XCLIError directly
 ##############################################################################
+
+
 @CommandExecutionError.register("LOGIN_FAILURE_USER_FAILED_TO_LOGIN",
                                 "USER_NAME_DOES_NOT_EXIST",
                                 "DEFAULT_USER_IS_NOT_DEFINED",

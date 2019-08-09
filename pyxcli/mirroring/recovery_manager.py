@@ -280,33 +280,20 @@ class RecoveryManager(object):
             target name must be a valid target from target_list,
             mirror type must be 'sync' or 'async',
             slave_resource_name would be the slave_vol or slave_cg name'''
-        if part_of_multisite == 'yes':
-            kwargs = {
-                resource_type: resource_name,
-                'target': target_name,
-                'type': mirror_type,
-                'slave_' + resource_type: slave_resource_name,
-                'create_slave': create_slave,
-                'remote_pool': remote_pool,
-                'rpo': rpo,
-                'remote_rpo': remote_rpo,
-                'schedule': schedule,
-                'remote_schedule': remote_schedule,
-                'part_of_multisite': part_of_multisite
-            }
-        else:
-            kwargs = {
-                resource_type: resource_name,
-                'target': target_name,
-                'type': mirror_type,
-                'slave_' + resource_type: slave_resource_name,
-                'create_slave': create_slave,
-                'remote_pool': remote_pool,
-                'rpo': rpo,
-                'remote_rpo': remote_rpo,
-                'schedule': schedule,
-                'remote_schedule': remote_schedule
-            }
+
+        kwargs = {
+            resource_type: resource_name,
+            'target': target_name,
+            'type': mirror_type,
+            'slave_' + resource_type: slave_resource_name,
+            'create_slave': create_slave,
+            'remote_pool': remote_pool,
+            'rpo': rpo,
+            'remote_rpo': remote_rpo,
+            'schedule': schedule,
+            'remote_schedule': remote_schedule,
+            'part_of_multisite': part_of_multisite
+        }
 
         if mirror_type == 'sync':
             kwargs['type'] = 'sync_best_effort'
@@ -315,6 +302,9 @@ class RecoveryManager(object):
             kwargs['type'] = 'async_interval'
             if kwargs['remote_schedule'] is None:
                 kwargs['remote_schedule'] = kwargs['schedule']
+
+        if part_of_multisite == 'no':
+            kwargs['part_of_multisite'] = None
 
         # avoids a python3 issue of the dict changing
         # during iteration

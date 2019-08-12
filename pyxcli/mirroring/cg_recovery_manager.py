@@ -110,7 +110,7 @@ class CGRecoveryManager(RecoveryManager):
     def create_mirror(self, resource_name, target_name, mirror_type,
                       slave_resource_name, rpo=None, remote_rpo=None,
                       schedule=None, remote_schedule=None,
-                      activate_mirror='no', part_of_multisite='no'):
+                      activate_mirror='no', part_of_multisite=None):
         '''creates a mirror and returns a mirror object.
            target name must be a valid target from target_list,
            mirror type must be 'sync' or 'async',

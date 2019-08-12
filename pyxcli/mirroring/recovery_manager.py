@@ -274,7 +274,7 @@ class RecoveryManager(object):
                        mirror_type, slave_resource_name, create_slave='no',
                        remote_pool=None, rpo=None, remote_rpo=None,
                        schedule=None, remote_schedule=None,
-                       activate_mirror='no', part_of_multisite='no'):
+                       activate_mirror='no', part_of_multisite=None):
         '''creates a mirror and returns a mirror object.
             resource_type must be 'vol' or 'cg',
             target name must be a valid target from target_list,
@@ -302,9 +302,6 @@ class RecoveryManager(object):
             kwargs['type'] = 'async_interval'
             if kwargs['remote_schedule'] is None:
                 kwargs['remote_schedule'] = kwargs['schedule']
-
-        if part_of_multisite == 'no':
-            kwargs['part_of_multisite'] = None
 
         # avoids a python3 issue of the dict changing
         # during iteration

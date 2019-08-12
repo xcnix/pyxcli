@@ -20,7 +20,7 @@ from logging import getLogger
 from pyxcli import XCLI_DEFAULT_LOGGER
 from pyxcli.mirroring.mirrored_entities import MirroredEntities
 from pyxcli.mirroring.mirrored_entities import MirroredCachedEntities
-from pyxcli.errors import XCLIError
+from pyxcli.errors import XCLIError, VolumeIsNotMultisite
 from pyxcli.errors import CommandExecutionError
 from pyxcli.errors import SyncAlreadyActiveError
 from pyxcli.errors import SyncAlreadyInactiveError
@@ -502,3 +502,77 @@ class RecoveryManager(object):
 
     def is_cg_replicated(self, local_cg_id):
         return local_cg_id in self.action_entities.get_cg_mirrors()
+
+    def _create_ha(self, resource_type, resource_name, target_name,
+                   remote_pool=None, create_slave='no',
+                   activate_ha='no', part_of_multisite='no'):
+        '''creates a mirror and returns a mirror object.
+            resource_type must be 'vol' or 'cg',
+            target name must be a valid target from target_list,
+            mirror type must be 'sync' or 'async',
+            slave_resource_name would be the slave_vol or slave_cg name'''
+
+        kwargs = {
+            resource_type: resource_name,
+            'target': target_name,
+            'remote_pool': remote_pool,
+            'create_slave': create_slave,
+            'activate_ha': activate_ha,
+            'part_of_multisite': part_of_multisite
+
+        }
+
+        if part_of_multisite == 'no':
+            kwargs['part_of_multisite'] = None
+
+        # avoids a python3 issue of the dict changing
+        # during iteration
+        keys = set(kwargs.keys()).copy()
+        for k in keys:
+            if kwargs[k] is None:
+                kwargs.pop(k)
+
+        logger.info('creating hyperswap with arguments: %s' % kwargs)
+        self.xcli_client.cmd.ha_create(**kwargs)
+
+        if activate_ha == 'yes':
+            logger.info('Activating hyperswap %s' % resource_name)
+            self.activate_ha(resource_name)
+
+        return self.get_ha_resources()[resource_name]
+
+    def _activate_ha(self, **kwargs):
+        # if we get SYNC_ALREADY_ACTIVE (status 3) it is safe to ignore it
+        try:
+            self.xcli_client.cmd.ha_activate(**kwargs)
+        except SyncAlreadyActiveError:
+            logger.warning("_activate_hyperswap got an error, "
+                           "Synchronization is already active")
+
+    def _delete_ha(self, **kwargs):
+        logger.info('Deleting hyperswap %s' % kwargs)
+        self.xcli_client.cmd.ha_delete(**kwargs)
+
+    def _deactivate_ha(self, **kwargs):
+        # if we get SYNC_ALREADY_INACTIVE (status 3) it is safe to ignore it
+        try:
+            self.xcli_client.cmd.ha_deactivate(**kwargs)
+        except SyncAlreadyInactiveError:
+            logger.warning("_deactivate_hyperswap got an error, "
+                           "Synchronization is already inactive")
+
+    def _define_multisite(self, **kwargs):
+        logger.info('defining multisite with arguments: %s' % kwargs)
+        self.xcli_client.cmd.multisite_define(**kwargs)
+
+    def _delete_multisite(self, **kwargs):
+        logger.info('deleting multisite with arguments: %s' % kwargs)
+        try:
+            self.xcli_client.cmd.multisite_delete(**kwargs)
+        except VolumeIsNotMultisite:
+            logger.warning("_delete_multisite got an error, "
+                           "Volume is not multisite")
+
+    def _multisite_register_standby_mirror(self, **kwargs):
+        logger.info('registering standby mirror with arguments: %s' % kwargs)
+        self.xcli_client.cmd.multisite_register_standby_mirror(**kwargs)

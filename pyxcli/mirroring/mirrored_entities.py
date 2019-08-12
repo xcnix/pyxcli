@@ -38,12 +38,22 @@ class MirroredEntities(object):
         return xcli_mirror.local_peer_name
 
     @classmethod
+    def get_haed_object_name(cls, xcli_ha, remote_name=False):
+        if remote_name:
+            return xcli_ha.remote_peer_name
+        return xcli_ha.local_peer_name
+
+    @classmethod
     def is_mirror_master(cls, xcli_mirror):
         return xcli_mirror.current_role == 'Master'
 
     @classmethod
-    def is_target_connected(cls, xcli_mirror):
-        return xcli_mirror.connected == 'yes'
+    def is_ha_master(cls, xcli_ha):
+        return xcli_ha.current_role == 'Master'
+
+    @classmethod
+    def is_ha_target_connected(cls, xcli_ha):
+        return xcli_ha.connected == 'yes'
 
     def get_mirror_resources_by_name_map(self, scope=None):
         """ returns a map volume_name -> volume, cg_name->cg
@@ -63,11 +73,59 @@ class MirroredEntities(object):
         res = Munch(volumes=volumes_mirrors_by_name, cgs=cgs_mirrors_by_name)
         return res
 
+    def get_ha_resources_by_name_map(self, scope=None):
+        """ returns a map volume_name -> volume, cg_name->cg
+            scope is either None or CG or Volume
+        """
+        volumes_ha_by_name = dict()
+        cgs_ha_by_name = dict()
+        if ((scope is None) or (scope.lower() == 'volume')):
+            ha_list = self.xcli_client.cmd.ha_list(scope='Volume')
+            for xcli_ha in ha_list:
+                name = MirroredEntities.get_haed_object_name(xcli_ha)
+                volumes_ha_by_name[name] = xcli_ha
+        if ((scope is None) or (scope.lower() == CG)):
+            for xcli_ha in self.xcli_client.cmd.ha_list(scope='CG'):
+                name = MirroredEntities.get_haed_object_name(xcli_ha)
+                cgs_ha_by_name[name] = xcli_ha
+        res = Munch(volumes=volumes_ha_by_name, cgs=cgs_ha_by_name)
+        return res
+
+    def get_multisite_resources_by_name_map(self, scope=None):
+        """ returns a map volume_name -> volume, cg_name->cg
+            scope is either None or CG or Volume
+        """
+        volumes_multisite_by_name = dict()
+        cgs_multisite_by_name = dict()
+        if ((scope is None) or (scope.lower() == 'volume')):
+            multisite_list = self.xcli_client.cmd.multisite_list(scope='Volume')
+            for xcli_multisite in multisite_list:
+                name = MirroredEntities.get_haed_object_name(xcli_multisite)
+                volumes_multisite_by_name[name] = xcli_multisite
+        if ((scope is None) or (scope.lower() == CG)):
+            for xcli_ha in self.xcli_client.cmd.multisite_list(scope='CG'):
+                name = MirroredEntities.get_haed_object_name(xcli_multisite)
+                cgs_multisite_by_name[name] = xcli_multisite
+        res = Munch(volumes=volumes_multisite_by_name, cgs=cgs_multisite_by_name)
+        return res
+
     def get_cg_mirrors(self):
         return self.get_mirror_resources_by_name_map(scope="CG").cgs
 
+    def get_cg_ha(self):
+        return self.get_ha_resources_by_name_map(scope="CG").cgs
+
+    def get_cg_multisite(self):
+        return self.get_multisite_resources_by_name_map(scope="CG").cgs
+
     def get_vol_mirrors(self):
         return self.get_mirror_resources_by_name_map(scope="Volume").volumes
+
+    def get_vol_ha(self):
+        return self.get_ha_resources_by_name_map(scope="Volume").volumes
+
+    def get_vol_multisite(self):
+        return self.get_multisite_resources_by_name_map(scope="Volume").volumes
 
     def get_volume_by_name_map(self):
         return self.xcli_client.cmd.vol_list().as_dict('name')
@@ -146,14 +204,44 @@ class MirroredCachedEntities(MirroredEntities):
                 self).get_mirror_resources_by_name_map()
         return self._cache[cache_key]
 
+    @property
+    def _cached_xcli_ha(self):
+        cache_key = 'xcli_ha'
+        if cache_key not in self._cache:
+            self._cache[cache_key] = super(
+                MirroredCachedEntities,
+                self).get_ha_resources_by_name_map()
+        return self._cache[cache_key]
+
+    @property
+    def _cached_xcli_multisite(self):
+        cache_key = 'xcli_multisite'
+        if cache_key not in self._cache:
+            self._cache[cache_key] = super(
+                MirroredCachedEntities,
+                self).get_multisite_resources_by_name_map()
+        return self._cache[cache_key]
+
     def get_cg_mirrors(self):
         return self._cached_xcli_mirrors.cgs
+
+    def get_cg_ha(self):
+        return self._cached_xcli_ha.cgs
 
     def get_vol_mirrors(self):
         return self._cached_xcli_mirrors.volumes
 
+    def get_vol_ha(self):
+        return self._cached_xcli_ha.volumes
+
     def get_mirror_resources_by_name_map(self):
         return self._cached_xcli_mirrors
+
+    def get_ha_resources_by_name_map(self):
+        return self._cached_xcli_ha
+
+    def get_multisite_resources_by_name_map(self):
+        return self._cached_xcli_multisite
 
     @property
     def _cached_xcli_volumes(self):

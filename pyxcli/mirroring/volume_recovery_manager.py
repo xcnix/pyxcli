@@ -86,7 +86,7 @@ class VolumeRecoveryManager(RecoveryManager):
                       slave_resource_name, create_slave='no', remote_pool=None,
                       rpo=None, remote_rpo=None, schedule=None,
                       remote_schedule=None, activate_mirror='no',
-                      part_of_multisite='no'):
+                      part_of_multisite=None):
         '''creates a mirror and returns a mirror object,
            target name must be a valid target from target_list,
            mirror type must be 'sync' or 'async',

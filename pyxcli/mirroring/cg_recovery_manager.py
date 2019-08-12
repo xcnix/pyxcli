@@ -22,7 +22,6 @@ from pyxcli.mirroring.recovery_manager import \
 from pyxcli.mirroring.mirrored_entities import CG
 from pyxcli.mirroring.errors import NoMirrorDefinedError
 
-
 logger = getLogger(XCLI_DEFAULT_LOGGER + '.mirroring')
 
 
@@ -36,6 +35,12 @@ class CGRecoveryManager(RecoveryManager):
 
     def get_mirror_resources(self):
         return self.action_entities.get_cg_mirrors()
+
+    def get_ha_resources(self):
+        return self.action_entities.get_cg_ha()
+
+    def get_multisite_resources(self):
+        return self.action_entities.get_cg_multisite()
 
     def get_type_str(self):
         return CG
@@ -216,3 +221,34 @@ class CGRecoveryManager(RecoveryManager):
             if device not in self.get_cg_volumes(group):
                 logger.error("Device %s is not in cg %s" % (device, group))
                 raise NoMirrorDefinedError()
+
+    # ====================================== HYPERSWAP ACTIONS =========================
+
+    def activate_ha(self, vol_id):
+        self._activate_ha(cg=vol_id)
+
+    def deactivate_ha(self, resource_id):
+        self._deactivate_ha(cg=resource_id)
+
+    def delete_ha(self, resource_id):
+        # delete a mirror by mirror name
+        self._delete_ha(cg=resource_id)
+
+    def create_ha(self, resource_name, target_name,
+                  slave_resource_name, create_slave='no', remote_pool=None,
+                  activate_ha='no', part_of_multisite='no'):
+        return self._create_ha('cg', resource_name, target_name,
+                               slave_resource_name,
+                               create_slave=create_slave,
+                               remote_pool=remote_pool,
+                               activate_ha=activate_ha,
+                               part_of_multisite=part_of_multisite)
+
+    def define_multisite(self, resource_name):
+        return self._define_multisite(cg=resource_name)
+
+    def delete_multisite(self, resource_name):
+        return self._delete_multisite(cg=resource_name)
+
+    def multisite_register_standby_mirror(self, resource_name):
+        return self._multisite_register_standby_mirror(cg=resource_name)

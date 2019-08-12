@@ -789,12 +789,6 @@ class HaAssociatedWithMultisite(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register(
-    "TRNS_MGMT_STATUS_OBJECTS_IN_DIFFERENT_DOMAINS")
-class StorageObjectIsNotInDomain(CommandFailedRuntimeError):
-    pass
-
-
 @CommandExecutionError.register("HA_BAD_ID")
 class HaBadId(CommandFailedRuntimeError):
     pass

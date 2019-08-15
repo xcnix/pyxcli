@@ -127,11 +127,11 @@ class CGRecoveryManager(RecoveryManager):
         '''delete a mirror by resource_id'''
         self._delete_mirror(cg=resource_id)
 
-    def activate_mirror(self, resource_id):
-        self._activate_mirror(cg=resource_id)
+    def activate_mirror(self, resource_name, target_name=None):
+        self._activate_mirror('cg', resource_name, target_name=target_name)
 
-    def deactivate_mirror(self, resource_id):
-        self._deactivate_mirror(cg=resource_id)
+    def deactivate_mirror(self, resource_name, target_name=None):
+        self._deactivate_mirror('cg', resource_name, target_name=target_name)
 
     def _change_role(self, resource_id, role):
         self.xcli_client.cmd.mirror_change_role(cg=resource_id, new_role=role)
@@ -234,14 +234,21 @@ class CGRecoveryManager(RecoveryManager):
         # delete a mirror by mirror name
         self._delete_ha(cg=resource_id)
 
+    def convert_ha_to_mirror(self, resource_id):
+        '''delete a mirror by mirror name'''
+        self._convert_ha_to_mirror(cg=resource_id)
+
+    def convert_mirror_to_ha(self, resource_id):
+        '''delete a mirror by mirror name'''
+        self._convert_mirror_to_ha(cg=resource_id)
+
     def create_ha(self, resource_name, target_name,
                   slave_resource_name, create_slave='no', remote_pool=None,
-                  activate_ha='no', part_of_multisite='no'):
+                  activate_ha='no', part_of_multisite=None):
         return self._create_ha('cg', resource_name, target_name,
                                slave_resource_name,
                                create_slave=create_slave,
                                remote_pool=remote_pool,
-                               activate_ha=activate_ha,
                                part_of_multisite=part_of_multisite)
 
     def define_multisite(self, resource_name):

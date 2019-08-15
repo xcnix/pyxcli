@@ -501,8 +501,9 @@ class RecoveryManager(object):
         return local_cg_id in self.action_entities.get_cg_mirrors()
 
     def _create_ha(self, resource_type, resource_name, target_name,
-                   remote_pool=None, create_slave='no',
-                   activate_ha='no', part_of_multisite='no'):
+                   slave_resource_name,remote_pool=None,
+                   create_slave='no', activate_ha='no',
+                   part_of_multisite=None):
         '''creates a mirror and returns a mirror object.
             resource_type must be 'vol' or 'cg',
             target name must be a valid target from target_list,
@@ -513,14 +514,10 @@ class RecoveryManager(object):
             resource_type: resource_name,
             'target': target_name,
             'remote_pool': remote_pool,
+            'slave_' + resource_type: slave_resource_name,
             'create_slave': create_slave,
-            'activate_ha': activate_ha,
             'part_of_multisite': part_of_multisite
-
         }
-
-        if part_of_multisite == 'no':
-            kwargs['part_of_multisite'] = None
 
         # avoids a python3 issue of the dict changing
         # during iteration
@@ -540,6 +537,7 @@ class RecoveryManager(object):
 
     def _activate_ha(self, **kwargs):
         # if we get SYNC_ALREADY_ACTIVE (status 3) it is safe to ignore it
+        logger.info('activating hyperswap with arguments %s' % kwargs)
         try:
             self.xcli_client.cmd.ha_activate(**kwargs)
         except SyncAlreadyActiveError:
@@ -551,12 +549,20 @@ class RecoveryManager(object):
         self.xcli_client.cmd.ha_delete(**kwargs)
 
     def _deactivate_ha(self, **kwargs):
-        # if we get SYNC_ALREADY_INACTIVE (status 3) it is safe to ignore it
+        logger.info('Deactivate hyperswap %s' % kwargs)
         try:
             self.xcli_client.cmd.ha_deactivate(**kwargs)
         except SyncAlreadyInactiveError:
             logger.warning("_deactivate_hyperswap got an error, "
                            "Synchronization is already inactive")
+
+    def _convert_ha_to_mirror(self, **kwargs):
+        logger.info('Convert hyperswap to mirror %s' % kwargs)
+        self.xcli_client.cmd.ha_convert_into_mirror(**kwargs)
+
+    def _convert_mirror_to_ha(self, **kwargs):
+        logger.info('Convert hyperswap to mirror %s' % kwargs)
+        self.xcli_client.cmd.mirror_convert_into_ha(**kwargs)
 
     def _define_multisite(self, **kwargs):
         logger.info('defining multisite with arguments: %s' % kwargs)

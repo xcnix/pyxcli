@@ -20,7 +20,8 @@ from logging import getLogger
 from pyxcli import XCLI_DEFAULT_LOGGER
 from pyxcli.mirroring.mirrored_entities import MirroredEntities
 from pyxcli.mirroring.mirrored_entities import MirroredCachedEntities
-from pyxcli.errors import XCLIError, VolumeIsNotMultisite
+from pyxcli.errors import XCLIError, VolumeIsNotMultisite, VolumeTargetMismatch, VolumeHasNoMirrorError, \
+    StandbyAlreadyDefined
 from pyxcli.errors import CommandExecutionError
 from pyxcli.errors import SyncAlreadyActiveError
 from pyxcli.errors import SyncAlreadyInactiveError
@@ -578,4 +579,16 @@ class RecoveryManager(object):
 
     def _multisite_register_standby_mirror(self, **kwargs):
         logger.info('registering standby mirror with arguments: %s' % kwargs)
-        self.xcli_client.cmd.multisite_register_standby_mirror(**kwargs)
+        try:
+            self.xcli_client.cmd.multisite_register_standby_mirror(**kwargs)
+        except StandbyAlreadyDefined:
+            logger.warning("_multisite_register_standby_mirror got an error, "
+                           "A standby relation is already defined on this system")
+
+    def _mirror_convert_into_ha(self, **kwargs):
+        logger.info('converting mirror to ha with arguments: %s' % kwargs)
+        self.xcli_client.cmd.mirror_convert_into_ha(**kwargs)
+
+    def _ha_convert_into_mirror(self, **kwargs):
+        logger.info('converting ha to mirror with arguments: %s' % kwargs)
+        self.xcli_client.cmd.ha_convert_into_mirror(**kwargs)

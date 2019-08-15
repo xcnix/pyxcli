@@ -101,15 +101,24 @@ class VolumeRecoveryManager(RecoveryManager):
                                    activate_mirror=activate_mirror,
                                    part_of_multisite=part_of_multisite)
 
-    def delete_mirror(self, resource_id):
+    def delete_mirror(self, resource_id, target_name=None):
         '''delete a mirror by mirror name'''
-        self._delete_mirror(vol=resource_id)
+        if target_name is not None:
+            self._delete_mirror(vol=resource_id, target=target_name)
+        else:
+            self._delete_mirror(vol=resource_id)
 
-    def activate_mirror(self, vol_id):
-        self._activate_mirror(vol=vol_id)
+    def activate_mirror(self, vol_id, target_name=None):
+        if target_name is not None:
+            self._activate_mirror(vol=vol_id, target=target_name)
+        else:
+            self._activate_mirror(vol=vol_id)
 
-    def deactivate_mirror(self, resource_id):
-        self._deactivate_mirror(vol=resource_id)
+    def deactivate_mirror(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._deactivate_mirror(vol=resource_id, target=target_name)
+        else:
+            self._deactivate_mirror(vol=resource_id)
 
     def _change_role(self, resource_id, role):
         self.xcli_client.cmd.mirror_change_role(vol=resource_id, new_role=role)
@@ -198,15 +207,23 @@ class VolumeRecoveryManager(RecoveryManager):
     def get_ha_resources(self):
         return self.action_entities.get_vol_ha()
 
-    def activate_ha(self, vol_id):
-        self._activate_ha(vol=vol_id)
+    def activate_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._activate_ha(vol=resource_id, target=target_name)
+        else:
+            self._activate_ha(vol=resource_id)
 
-    def deactivate_ha(self, resource_id):
-        self._deactivate_ha(vol=resource_id)
+    def deactivate_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._deactivate_ha(vol=resource_id, target=target_name)
+        else:
+            self._deactivate_ha(vol=resource_id)
 
-    def delete_ha(self, resource_id):
-        '''delete a mirror by mirror name'''
-        self._delete_ha(vol=resource_id)
+    def delete_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._delete_ha(vol=resource_id, target=target_name)
+        else:
+            self._delete_ha(vol=resource_id)
 
     def create_ha(self, resource_name, target_name,
                   slave_resource_name, create_slave='no', remote_pool=None,
@@ -218,12 +235,17 @@ class VolumeRecoveryManager(RecoveryManager):
                                activate_ha=activate_ha,
                                part_of_multisite=part_of_multisite)
 
-    def define_multisite(self, resource_name):
-        return self._define_multisite(vol=resource_name)
+    def define_multisite(self, resource_id):
+        self._define_multisite(vol=resource_id)
 
-    def delete_multisite(self, resource_name):
-        return self._delete_multisite(vol=resource_name)
+    def delete_multisite(self, resource_id):
+        self._delete_multisite(vol=resource_id)
 
-    def multisite_register_standby_mirror(self, resource_name):
-        return self._multisite_register_standby_mirror(vol=resource_name)
+    def multisite_register_standby_mirror(self, resource_id):
+        self._multisite_register_standby_mirror(vol=resource_id)
 
+    def mirror_convert_into_ha(self, resource_id):
+        self._mirror_convert_into_ha(vol=resource_id)
+
+    def ha_convert_into_mirror(self, resource_id):
+        self._ha_convert_into_mirror(vol=resource_id)

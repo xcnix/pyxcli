@@ -1302,6 +1302,17 @@ class VolumeTargetMismatch(CommandFailedRuntimeError):
 @CommandExecutionError.register("TARGET_VOLUME_HAS_HA")
 class TargetVolumeHasHa(CommandFailedRuntimeError):
     pass
+
+
+@CommandExecutionError.register("REMOTE_ACTION_FAILED")
+class RemoteActionFailed(CommandFailedRuntimeError):
+    pass
+
+
+@CommandExecutionError.register("MULTISITE_DELETE_PARTIAL"
+                                "_FAILURE_MANUAL_CLEANUP_REQUIRED")
+class MultisitePartialDelete(CommandFailedRuntimeError):
+    pass
 ##############################################################################
 # CredentialsError
 # we explicitly want to differentiate CredentialsError from

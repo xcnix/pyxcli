@@ -224,38 +224,52 @@ class CGRecoveryManager(RecoveryManager):
 
     # ====================================== HYPERSWAP ACTIONS =========================
 
-    def activate_ha(self, vol_id):
-        self._activate_ha(cg=vol_id)
+    def get_ha_resources(self):
+        return self.action_entities.get_cg_ha()
 
-    def deactivate_ha(self, resource_id):
-        self._deactivate_ha(cg=resource_id)
+    def activate_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._activate_ha(cg=resource_id, target=target_name)
+        else:
+            self._activate_ha(vol=resource_id)
 
-    def delete_ha(self, resource_id):
-        # delete a mirror by mirror name
-        self._delete_ha(cg=resource_id)
+    def deactivate_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._deactivate_ha(cg=resource_id, target=target_name)
+        else:
+            self._deactivate_ha(cg=resource_id)
 
-    def convert_ha_to_mirror(self, resource_id):
-        '''delete a mirror by mirror name'''
-        self._convert_ha_to_mirror(cg=resource_id)
-
-    def convert_mirror_to_ha(self, resource_id):
-        '''delete a mirror by mirror name'''
-        self._convert_mirror_to_ha(cg=resource_id)
+    def delete_ha(self, resource_id, target_name=None):
+        if target_name is not None:
+            self._delete_ha(cg=resource_id, target=target_name)
+        else:
+            self._delete_ha(cg=resource_id)
 
     def create_ha(self, resource_name, target_name,
                   slave_resource_name, create_slave='no', remote_pool=None,
-                  activate_ha='no', part_of_multisite=None):
+                  activate_ha='no', part_of_multisite='no'):
         return self._create_ha('cg', resource_name, target_name,
                                slave_resource_name,
                                create_slave=create_slave,
                                remote_pool=remote_pool,
+                               activate_ha=activate_ha,
                                part_of_multisite=part_of_multisite)
 
-    def define_multisite(self, resource_name):
-        return self._define_multisite(cg=resource_name)
+    def define_multisite(self, resource_id):
+        self._define_multisite(cg=resource_id)
 
-    def delete_multisite(self, resource_name):
-        return self._delete_multisite(cg=resource_name)
+    def delete_multisite(self, resource_id, force_delete=None):
+        if force_delete is not None:
+            self._delete_multisite(cg=resource_id, force=force_delete)
+        else:
+            self._delete_multisite(cg=resource_id)
 
-    def multisite_register_standby_mirror(self, resource_name):
-        return self._multisite_register_standby_mirror(cg=resource_name)
+    def multisite_register_standby_mirror(self, resource_id):
+        self._multisite_register_standby_mirror(cg=resource_id)
+
+    def mirror_convert_into_ha(self, resource_id):
+        self._mirror_convert_into_ha(cg=resource_id)
+
+    def ha_convert_into_mirror(self, resource_id):
+        self._ha_convert_into_mirror(cg=resource_id)
+

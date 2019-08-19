@@ -149,8 +149,8 @@ class VolumeRecoveryManager(RecoveryManager):
         if (snapshot_name is None):
             snapshot_name = ("temp_synced_%s" % device_id)[0:CHAR_LIMIT]
         logger.debug("-> Replica of device [%s] with key [%s] is being "
-                     "cloned." % (device_id, snapshot_name) + "This is "
-                     "the failsafe snapshot to use in case production "
+                     "cloned." % (device_id, snapshot_name) +
+                     "This is the failsafe snapshot to use in case production "
                      "site had failed before replication has completed.")
         if self.action_entities.get_volume_by_name(snapshot_name) is None:
             self.xcli_client.cmd.snapshot_create(
@@ -164,8 +164,8 @@ class VolumeRecoveryManager(RecoveryManager):
         if (snapshot_name is None):
             snapshot_name = ("temp_synced_%s" % device_id)[0:CHAR_LIMIT]
         logger.debug("-> Replica of device [%s] with key [%s] is being "
-                     "cloned." % (device_id, snapshot_name) + "This is "
-                     "the failsafe snapshot to use in case production "
+                     "cloned." % (device_id, snapshot_name) +
+                     "This is the failsafe snapshot to use in case production "
                      "site had failed before replication has completed.")
         if self.action_entities.get_volume_by_name(snapshot_name) is not None:
             self.xcli_client.cmd.snapshot_delete(snapshot=snapshot_name)
@@ -202,7 +202,7 @@ class VolumeRecoveryManager(RecoveryManager):
             return True
         return False
 
-# ====================================== HYPERSWAP ACTIONS =========================
+    # ====================================== HYPERSWAP ACTIONS =========================
 
     def get_ha_resources(self):
         return self.action_entities.get_vol_ha()
@@ -238,8 +238,11 @@ class VolumeRecoveryManager(RecoveryManager):
     def define_multisite(self, resource_id):
         self._define_multisite(vol=resource_id)
 
-    def delete_multisite(self, resource_id):
-        self._delete_multisite(vol=resource_id)
+    def delete_multisite(self, resource_id, force_delete=None):
+        if force_delete is not None:
+            self._delete_multisite(vol=resource_id, force=force_delete)
+        else:
+            self._delete_multisite(vol=resource_id)
 
     def multisite_register_standby_mirror(self, resource_id):
         self._multisite_register_standby_mirror(vol=resource_id)

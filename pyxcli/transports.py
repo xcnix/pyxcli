@@ -154,7 +154,7 @@ class SocketTransport(object):
                                                    h, p, ssl)
 
     @classmethod
-    def connect(cls, hostname, port, timeout=10.0):
+    def connect(cls, hostname, port, timeout=15.0):
         xlog.debug("CONNECT (non SSL) %s:%s", hostname, port)
         sock = socket.socket()
         sock.settimeout(timeout)
@@ -185,7 +185,7 @@ class SocketTransport(object):
         return True
 
     @classmethod
-    def connect_ssl(cls, hostname, port=XCLI_DEFAULT_PORT, timeout=10.0,
+    def connect_ssl(cls, hostname, port=XCLI_DEFAULT_PORT, timeout=15.0,
                     ca_certs=None, validate=None):
 
         certificate_required = cls._certificate_required(hostname,

@@ -1313,6 +1313,11 @@ class RemoteActionFailed(CommandFailedRuntimeError):
                                 "_FAILURE_MANUAL_CLEANUP_REQUIRED")
 class MultisitePartialDelete(CommandFailedRuntimeError):
     pass
+
+
+@CommandExecutionError.register("RPC_READ_RESPONSE_FAILED")
+class RpcReadResponseFailed(CommandFailedRuntimeError):
+    pass
 ##############################################################################
 # CredentialsError
 # we explicitly want to differentiate CredentialsError from

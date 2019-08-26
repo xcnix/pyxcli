@@ -1320,13 +1320,22 @@ class RpcReadResponseFailed(CommandFailedRuntimeError):
     pass
 
 
-@CommandExecutionError.register("ERROR.")
+@CommandExecutionError.register("ERROR")
 class GeneralError(CommandFailedRuntimeError):
+    pass
+
+@CommandExecutionError.register("MULTISITE_MASTER_INVALID_CONFIGURATION")
+class MultisiteMasterInvalidConfiguration(CommandFailedRuntimeError):
     pass
 
 
 @CommandExecutionError.register("MAPPING_IS_NOT_DEFINED")
 class MappingIsNotDefined(CommandFailedRuntimeError):
+    pass
+
+
+@CommandExecutionError.register("MULTISITE_MAX_NUM_OF_MIRRORS_REACHED")
+class MultisiteMaxNumOfMirrorsReached(CommandFailedRuntimeError):
     pass
 
 ##############################################################################
@@ -1414,4 +1423,8 @@ class TransportError(XCLIError):
 
 class ConnectionError(TransportError):
     """Represents errors that occur during connection"""
+    pass
+
+
+class RanOutOfEndpointError(IOError, TransportError):
     pass

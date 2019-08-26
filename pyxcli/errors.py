@@ -1318,6 +1318,17 @@ class MultisitePartialDelete(CommandFailedRuntimeError):
 @CommandExecutionError.register("RPC_READ_RESPONSE_FAILED")
 class RpcReadResponseFailed(CommandFailedRuntimeError):
     pass
+
+
+@CommandExecutionError.register("ERROR.")
+class GeneralError(CommandFailedRuntimeError):
+    pass
+
+
+@CommandExecutionError.register("MAPPING_IS_NOT_DEFINED")
+class MappingIsNotDefined(CommandFailedRuntimeError):
+    pass
+
 ##############################################################################
 # CredentialsError
 # we explicitly want to differentiate CredentialsError from

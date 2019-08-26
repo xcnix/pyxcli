@@ -33,6 +33,7 @@ from pyxcli.errors import TransportError
 from pyxcli.errors import ConnectionError
 from pyxcli.errors import CorruptResponse
 from pyxcli.errors import BaseScsiException
+from pyxcli.errors import RanOutOfEndpointError
 
 try:
     basestring
@@ -154,7 +155,7 @@ class SocketTransport(object):
                                                    h, p, ssl)
 
     @classmethod
-    def connect(cls, hostname, port, timeout=15.0):
+    def connect(cls, hostname, port, timeout=10.0):
         xlog.debug("CONNECT (non SSL) %s:%s", hostname, port)
         sock = socket.socket()
         sock.settimeout(timeout)
@@ -185,7 +186,7 @@ class SocketTransport(object):
         return True
 
     @classmethod
-    def connect_ssl(cls, hostname, port=XCLI_DEFAULT_PORT, timeout=15.0,
+    def connect_ssl(cls, hostname, port=XCLI_DEFAULT_PORT, timeout=10.0,
                     ca_certs=None, validate=None):
 
         certificate_required = cls._certificate_required(hostname,
@@ -328,8 +329,8 @@ class MultiEndpointTransport(Transport):
             if not self.available_endpoints:
                 xlog.debug("MultiEndpointTransport: no more endpoints \
                            available")
-                raise ClosedTransportError("Ran out of endpoints to \
-                                           connect to", exceptions)
+                raise RanOutOfEndpointError("Ran out of endpoints to \
+                                            connect to", exceptions)
 
             ep = self.available_endpoints.pop(0)
             xlog.debug("MultiEndpointTransport: changing to \
@@ -355,8 +356,17 @@ class MultiEndpointTransport(Transport):
             self._connect()
             try:
                 return self.transport.send(*args)
-            except (TransportError, IOError):
+            except TransportError as ex:
                 self.transport.close()
                 self.transport = ClosedTransport
                 xlog.debug("MultiEndpointTransport: sending over %s failed",
                            self.transport)
+                xlog.debug("Request failed in TransportError with error message: "
+                           "%(msg)s" % dict(msg=ex))
+            except IOError as ex:
+                self.transport.close()
+                self.transport = ClosedTransport
+                xlog.debug("MultiEndpointTransport: sending over %s failed",
+                           self.transport)
+                xlog.debug("Request failed in IOError with error message: "
+                           "%(msg)s" % dict(msg=ex))

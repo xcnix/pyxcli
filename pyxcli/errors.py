@@ -1338,6 +1338,10 @@ class MappingIsNotDefined(CommandFailedRuntimeError):
 class MultisiteMaxNumOfMirrorsReached(CommandFailedRuntimeError):
     pass
 
+
+@CommandExecutionError.register("MIRROR_ASSOCIATED_WITH_MULTISITE")
+class MirrorAssociatedWithMultisite(CommandFailedRuntimeError):
+    pass
 ##############################################################################
 # CredentialsError
 # we explicitly want to differentiate CredentialsError from
